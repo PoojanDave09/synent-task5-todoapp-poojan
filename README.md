@@ -1,5 +1,3 @@
-## Technologies Used
+## Author
 
-- HTML
-- CSS
-- JavaScript
+Poojan
