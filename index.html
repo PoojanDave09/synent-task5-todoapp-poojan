@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tasky — Task Manager</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background orbs -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <div class="app-wrapper">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+        <span class="brand-name">Tasky</span>
+      </div>
+
+      <!-- Stats panel -->
+      <div class="stats-panel">
+        <p class="stats-label">Today's Progress</p>
+        <div class="progress-ring-wrap">
+          <svg class="progress-ring" viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="40" cy="40" r="34"/>
+            <circle class="ring-fill" id="progressCircle" cx="40" cy="40" r="34"/>
+          </svg>
+          <div class="ring-text">
+            <span id="progressPct">0%</span>
+          </div>
+        </div>
+
+        <div class="stat-chips">
+          <div class="chip chip-total">
+            <i class="fa-solid fa-list-check"></i>
+            <div>
+              <span id="totalCount">0</span>
+              <p>Total</p>
+            </div>
+          </div>
+          <div class="chip chip-done">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <span id="doneCount">0</span>
+              <p>Done</p>
+            </div>
+          </div>
+          <div class="chip chip-pending">
+            <i class="fa-solid fa-hourglass-half"></i>
+            <div>
+              <span id="pendingCount">0</span>
+              <p>Pending</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter buttons -->
+      <nav class="filter-nav">
+        <p class="nav-label">View</p>
+        <button class="filter-btn active" data-filter="all">
+          <i class="fa-solid fa-border-all"></i> All Tasks
+        </button>
+        <button class="filter-btn" data-filter="active">
+          <i class="fa-solid fa-circle-dot"></i> Active
+        </button>
+        <button class="filter-btn" data-filter="completed">
+          <i class="fa-solid fa-circle-check"></i> Completed
+        </button>
+      </nav>
+
+      <button class="clear-btn" id="clearAllBtn">
+        <i class="fa-solid fa-trash-can"></i> Clear All
+      </button>
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main">
+
+      <!-- Header -->
+      <header class="main-header">
+        <div class="header-left">
+          <p class="greeting" id="greetingText">Good morning</p>
+          <h1 class="header-title">My Workspace</h1>
+        </div>
+        <div class="header-right">
+          <div class="date-badge">
+            <i class="fa-regular fa-calendar"></i>
+            <span id="currentDate"></span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Input card -->
+      <div class="input-card glass-card">
+        <div class="input-row">
+          <div class="input-wrap">
+            <i class="fa-solid fa-pen-to-square input-icon"></i>
+            <input
+              type="text"
+              id="taskInput"
+              class="task-input"
+              placeholder="What needs to be done today?"
+              maxlength="120"
+              autocomplete="off"
+            />
+          </div>
+          <button class="add-btn" id="addBtn">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Task</span>
+          </button>
+        </div>
+        <p class="error-msg" id="errorMsg">
+          <i class="fa-solid fa-circle-exclamation"></i> Task can't be empty.
+        </p>
+      </div>
+
+      <!-- Task list area -->
+      <section class="task-section">
+        <div class="section-header">
+          <span class="section-title" id="sectionTitle">All Tasks</span>
+          <span class="task-badge" id="visibleCount">0 tasks</span>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon"><i class="fa-solid fa-rocket"></i></div>
+          <h3>Nothing here yet</h3>
+          <p>Add your first task above to get started.</p>
+        </div>
+
+        <!-- Task list -->
+        <ul class="task-list" id="taskList"></ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Edit modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal glass-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-pen"></i> Edit Task</h2>
+        <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="input-wrap modal-input-wrap">
+        <i class="fa-solid fa-pen-to-square input-icon"></i>
+        <input type="text" id="editInput" class="task-input" placeholder="Update your task…" maxlength="120" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="modalCancel">Cancel</button>
+        <button class="btn-save" id="modalSave"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm modal -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal glass-card confirm-modal">
+      <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h2>Clear everything?</h2>
+      <p>All tasks will be permanently deleted. This can't be undone.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="confirmNo">Keep Tasks</button>
+        <button class="btn-danger" id="confirmYes"><i class="fa-solid fa-trash-can"></i> Yes, Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
