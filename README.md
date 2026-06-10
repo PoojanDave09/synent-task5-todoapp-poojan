@@ -1,5 +1,5 @@
-## Features
+## Technologies Used
 
-- Add Tasks
-- Edit Tasks
-- Delete Tasks
+- HTML
+- CSS
+- JavaScript
